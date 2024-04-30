@@ -57,10 +57,10 @@ pipeline {
                      to: 'your_email@example.com'
         }
         success {
-            emailext body: 'Build Successful', to: 'your_email@example.com'
+            emailext body: 'Build Successful', to: 'hplapi62@gmail.com'
         }
         failure {
-            emailext body: 'Build Failed - Check logs', to: 'your_email@example.com'
+            emailext body: 'Build Failed - Check logs', to: 'hplapi62@gmail.com'
         }
     }
 }

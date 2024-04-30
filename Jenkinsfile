@@ -1,4 +1,4 @@
-pipeline {
+ mmmmmmmmmmmmmmmmmmmmmmmmmm,mpipeline {
     agent any 
 
     stages {
@@ -55,7 +55,7 @@ pipeline {
             // Sent on both success and failure
             emailext subject: "Build Status Notification",
                      body: "Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} finished - check console output at ${env.BUILD_URL}",
-                     to: 'your_email@example.com'
+                     to: 'hplapi62@gmail.com'
         }
         success {
             emailext subject: "Build Successful",

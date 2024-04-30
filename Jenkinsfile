@@ -60,12 +60,12 @@ pipeline {
         success {
             emailext subject: "Build Successful",
                      body: "Build Successful",
-                     to: 'your_email@example.com'
+                     to: 'hplapi62@gmail.com'
         }
         failure {
             emailext subject: "Build Failed",
                      body: "Build Failed - Check logs",
-                     to: 'your_email@example.com'
+                     to: 'hplapi62@gmail.com'
         }
     }
 }

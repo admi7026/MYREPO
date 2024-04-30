@@ -53,14 +53,19 @@ pipeline {
     post {
         always { 
             // Sent on both success and failure
-            emailext body: 'Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} finished - check console output at ${env.BUILD_URL}', 
+            emailext subject: "Build Status Notification",
+                     body: "Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} finished - check console output at ${env.BUILD_URL}",
                      to: 'your_email@example.com'
         }
         success {
-            emailext body: 'Build Successful', to: 'hplapi62@gmail.com'
+            emailext subject: "Build Successful",
+                     body: "Build Successful",
+                     to: 'your_email@example.com'
         }
         failure {
-            emailext body: 'Build Failed - Check logs', to: 'hplapi62@gmail.com'
+            emailext subject: "Build Failed",
+                     body: "Build Failed - Check logs",
+                     to: 'your_email@example.com'
         }
     }
 }

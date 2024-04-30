@@ -46,17 +46,20 @@ pipeline {
         }
     }
 
-    post {
-        always { 
-            // Sent on both success and failure
-            emailext body: 'Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} finished - check console output at ${env.BUILD_URL}', 
-                     to: 'hplapi62@gmail.com'
-        }
-        success {
-            emailext body: 'Build Successful', to: 'hplapi62@gmail.com'
-        }
-        failure {
-            emailext body: 'Build Failed - Check logs', to: 'hplapi62@gmail.com'
-        }
+   post {
+    always { 
+        emailext body: 'Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} finished - check console output at ${env.BUILD_URL}', 
+                 subject: 'Build Status Update', // Add a subject line
+                 to: 'hplapi62@gmail.com'
+    }
+    success {
+        emailext body: 'Build Successful', 
+                 subject: 'Build Success: ${env.JOB_NAME} ${env.BUILD_NUMBER}',  // Add a subject line
+                 to: 'hplapi62@gmail.com'
+    }
+    failure {
+        emailext body: 'Build Failed - Check logs', 
+                 subject: 'Build Failure: ${env.JOB_NAME} ${env.BUILD_NUMBER}',  // Add a subject line
+                 to: 'hplapi62@gmail.com'
     }
 }

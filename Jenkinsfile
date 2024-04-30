@@ -1,48 +1,66 @@
 pipeline {
-    agent any
+    agent any 
 
     stages {
         stage('Build') {
             steps {
-                // Build code using a build automation tool (e.g., Maven)
+                echo 'Stage 1: Build - Using Maven'
+                sh 'mvn clean package' 
             }
         }
-
         stage('Unit and Integration Tests') {
             steps {
-                // Run unit tests and integration tests using test automation tools
+                echo 'Stage 2: Tests - Using JUnit, Mockito'
+                sh 'mvn test' 
             }
         }
-
         stage('Code Analysis') {
             steps {
-                // Integrate a code analysis tool (e.g., SonarQube) to analyze code
+                echo 'Stage 3: Analysis - Using SonarQube'
+                withSonarQubeEnv() { 
+                    sh 'mvn sonar:sonar' 
+                } 
             }
         }
-
         stage('Security Scan') {
             steps {
-                // Perform security scan using a security scanning tool
+                echo 'Stage 4: Security Scan - Using OWASP ZAP'
+                sh 'zap-cli --start'
+                sh 'zap-cli --quick-scan --self-contained --spider <target_url>'
+                sh 'zap-cli --report'
             }
         }
-
         stage('Deploy to Staging') {
             steps {
-                // Deploy application to staging server (e.g., AWS EC2)
+                echo 'Stage 5: Deploy - Deploying to AWS EC2' 
+                sh 'aws deploy push --application-name MyApp --s3-location s3://my-bucket/deployment.zip --ignore-hidden-files'
             }
         }
-
         stage('Integration Tests on Staging') {
             steps {
-                // Run integration tests on staging environment
+                echo 'Stage 6: Tests - Integration tests on staging'
+                sh 'run_integration_tests.sh staging'
             }
         }
-
         stage('Deploy to Production') {
             steps {
-                // Deploy application to production server (e.g., AWS EC2)
+                echo 'Stage 7: Deploy - Deploying to AWS EC2'
+                sh 'deploy_to_production.sh'
             }
         }
     }
-}
 
+    post {
+        always { 
+            // Sent on both success and failure
+            emailext body: 'Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} finished - check console output at ${env.BUILD_URL}', 
+                     to: 'your_email@example.com'
+        }
+        success {
+            emailext body: 'Build Successful', to: 'your_email@example.com'
+        }
+        failure {
+            emailext body: 'Build Failed - Check logs', to: 'your_email@example.com'
+        }
+    }
+}

@@ -5,31 +5,33 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Stage 1: Build - Using Maven (example)'
-                // Add your actual build commands here (e.g., 'mvn package')
+                sh 'mvn clean package' // If you use Maven 
             }
         }
         stage('Unit and Integration Tests') {
             steps {
                 echo 'Stage 2: Tests - Using JUnit, Mockito, etc. (examples)'
-                // Add your testing commands here (e.g., 'mvn test')
+                sh 'mvn test' // Assuming Maven and JUnit
             }
         }
         stage('Code Analysis') {
             steps {
-                echo 'Stage 3: Analysis - Using SonarQube (example)'
-                // Add SonarQube integration here (e.g., withSonarQubeEnv() {})
+                echo 'Stage 3: Analysis - Using SonarQube'
+                withSonarQubeEnv() { // Integrate SonarQube
+                    sh 'mvn sonar:sonar' // Example Maven execution
+                } 
             }
         }
         stage('Security Scan') {
             steps {
-                echo 'Stage 4: Security - Using OWASP ZAP (example)'
-                // Add OWASP ZAP integration here
+                echo 'Stage 4: Security Scan - Using OWASP ZAP'
+                // Integrate OWASP ZAP security scan
             }
         }
         stage('Deploy to Staging') {
             steps {
-                echo 'Stage 5: Deploy - Deploying to AWS EC2'
-                // Add your AWS deployment commands here 
+                echo 'Stage 5: Deploy - Deploying to AWS EC2' 
+                // Add your AWS deployment commands
             }
         }
         stage('Integration Tests on Staging') {
@@ -41,25 +43,17 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo 'Stage 7: Deploy - Deploying to AWS EC2'
-                // Add your production deployment commands here
+                // Add production deployment commands
             }
         }
     }
 
-   post {
-    always { 
-        emailext body: 'Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} finished - check console output at ${env.BUILD_URL}', 
-                 subject: 'Build Status Update', // Add a subject line
-                 to: 'hplapi62@gmail.com'
-    }
-    success {
-        emailext body: 'Build Successful', 
-                 subject: 'Build Success: ${env.JOB_NAME} ${env.BUILD_NUMBER}',  // Add a subject line
-                 to: 'hplapi62@gmail.com'
-    }
-    failure {
-        emailext body: 'Build Failed - Check logs', 
-                 subject: 'Build Failure: ${env.JOB_NAME} ${env.BUILD_NUMBER}',  // Add a subject line
-                 to: 'hplapi62@gmail.com'
+    post {
+        success {
+            emailext body: 'Build Successful', to: 'hplapi62@gmail.com'
+        }
+        failure {
+            emailext body: 'Build Failed - Check logs', to: 'hplapi62@gmail.com'
+        }
     }
 }
